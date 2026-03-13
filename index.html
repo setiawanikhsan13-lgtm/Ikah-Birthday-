@@ -156,7 +156,7 @@ pointer-events:none;
 
 <body>
 
-<!-- PIN -->
+<!-- PIN PAGE -->
 
 <div id="pinPage">
 
@@ -280,11 +280,11 @@ update()
 
 }
 
-/* LOVE BURST MOBILE */
+/* LOVE BURST */
 
 function heartBurst(x,y){
 
-for(let i=0;i<25;i++){
+for(let i=0;i<35;i++){
 
 let heart=document.createElement("div")
 
@@ -302,21 +302,36 @@ setTimeout(()=>heart.remove(),2000)
 
 }
 
-/* TAP ANYWHERE */
-
-document.addEventListener("touchstart",e=>{
-
-let x=e.touches[0].clientX
-let y=e.touches[0].clientY
-
-heartBurst(x,y)
-
-})
-
-/* SWIPE */
+/* TOUCH EVENT */
 
 let page=0
 let startX=0
+
+document.addEventListener("touchstart",e=>{
+
+let touch=e.touches[0]
+
+startX=touch.clientX
+
+heartBurst(touch.clientX,touch.clientY)
+
+})
+
+document.addEventListener("touchend",e=>{
+
+let endX=e.changedTouches[0].clientX
+
+if(startX-endX>50){
+if(page<2){page++;slide()}
+}
+
+if(endX-startX>50){
+if(page>0){page--;slide()}
+}
+
+})
+
+/* SLIDE */
 
 function slide(){
 
@@ -333,24 +348,6 @@ startConfetti()
 }
 
 }
-
-document.addEventListener("touchstart",e=>{
-startX=e.touches[0].clientX
-})
-
-document.addEventListener("touchend",e=>{
-
-let endX=e.changedTouches[0].clientX
-
-if(startX-endX>50){
-if(page<2){page++;slide()}
-}
-
-if(endX-startX>50){
-if(page>0){page--;slide()}
-}
-
-})
 
 /* RAIN */
 
