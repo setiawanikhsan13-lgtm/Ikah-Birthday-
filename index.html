@@ -31,8 +31,6 @@ justify-content:center;
 z-index:10;
 }
 
-/* COLLAGE BACKGROUND */
-
 .pinBG{
 position:absolute;
 width:100%;
@@ -107,7 +105,7 @@ position:absolute;
 width:300%;
 height:100vh;
 display:flex;
-transition:transform 0.9s cubic-bezier(.77,0,.18,1);
+transition:transform .9s cubic-bezier(.77,0,.18,1);
 }
 
 .page{
@@ -132,8 +130,6 @@ text-align:center;
 font-size:20px;
 }
 
-/* LIGHTNING */
-
 .flash{
 position:absolute;
 width:100%;
@@ -156,7 +152,7 @@ pointer-events:none;
 
 <body>
 
-<!-- PIN PAGE -->
+<!-- PIN -->
 
 <div id="pinPage">
 
@@ -203,28 +199,19 @@ pointer-events:none;
 <canvas id="rain"></canvas>
 <div class="flash" id="flash"></div>
 
-<div class="card">
-Bahkan saat hidup terasa seperti badai,
-kamu selalu ada di sana.
-</div>
+<div class="card" id="text1"></div>
 
 </div>
 
 <div class="page" style="background-image:url('zfoto2.jpeg')">
 
-<div class="card">
-Perlahan semuanya menjadi lebih tenang.
-Karena ada kamu di setiap langkahku.
-</div>
+<div class="card" id="text2"></div>
 
 </div>
 
 <div class="page" style="background-image:url('zfoto3.jpeg')">
 
-<div class="card">
-Terima kasih sudah hadir dalam hidupku.
-Semoga kita selalu bersama ❤️
-</div>
+<div class="card" id="text3"></div>
 
 </div>
 
@@ -235,6 +222,27 @@ Semoga kita selalu bersama ❤️
 </audio>
 
 <script>
+
+/* TEXT TYPEWRITER */
+
+function typeText(id,text,speed=40){
+
+let i=0
+let el=document.getElementById(id)
+
+function type(){
+
+if(i<text.length){
+el.innerHTML+=text.charAt(i)
+i++
+setTimeout(type,speed)
+}
+
+}
+
+type()
+
+}
 
 /* PIN */
 
@@ -268,6 +276,11 @@ function checkPin(){
 if(pin===correct){
 
 document.getElementById("pinPage").style.display="none"
+
+typeText("text1","Bahkan saat hidup terasa seperti badai, kamu selalu ada di sana.")
+typeText("text2","Perlahan semuanya menjadi lebih tenang karena ada kamu.")
+typeText("text3","Terima kasih sudah hadir dalam hidupku ❤️")
+
 startStorm(400,true)
 
 }else{
@@ -280,11 +293,11 @@ update()
 
 }
 
-/* LOVE BURST */
+/* HEART */
 
 function heartBurst(x,y){
 
-for(let i=0;i<35;i++){
+for(let i=0;i<30;i++){
 
 let heart=document.createElement("div")
 
@@ -302,18 +315,24 @@ setTimeout(()=>heart.remove(),2000)
 
 }
 
-/* TOUCH EVENT */
+/* TOUCH */
 
 let page=0
 let startX=0
 
 document.addEventListener("touchstart",e=>{
 
-let touch=e.touches[0]
+let t=e.touches[0]
 
-startX=touch.clientX
+startX=t.clientX
+heartBurst(t.clientX,t.clientY)
 
-heartBurst(touch.clientX,touch.clientY)
+})
+
+document.addEventListener("touchmove",e=>{
+
+let t=e.touches[0]
+heartBurst(t.clientX,t.clientY)
 
 })
 
@@ -357,7 +376,7 @@ let canvas
 let rainInterval
 let lightningInterval
 
-function startStorm(intensity,withLightning){
+function startStorm(intensity,light){
 
 canvas=document.getElementById("rain")
 ctx=canvas.getContext("2d")
@@ -381,7 +400,7 @@ len:12+Math.random()*10
 clearInterval(rainInterval)
 rainInterval=setInterval(drawRain,30)
 
-if(withLightning){
+if(light){
 startLightning()
 }else{
 clearInterval(lightningInterval)
@@ -447,7 +466,7 @@ confetti({
 particleCount:60,
 spread:40,
 startVelocity:30,
-gravity:1.1,
+gravity:1.2,
 ticks:300,
 scalar:1.4,
 origin:{x:Math.random(),y:0},
