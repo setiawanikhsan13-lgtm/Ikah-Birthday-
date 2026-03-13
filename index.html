@@ -90,15 +90,16 @@ cursor:pointer;
 /* HEART EFFECT */
 
 .heart{
-position:absolute;
-font-size:18px;
+position:fixed;
+font-size:20px;
 animation:heartFly 1.4s forwards;
 pointer-events:none;
+z-index:9999; /* selalu di depan */
 }
 
 @keyframes heartFly{
 0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-160px) scale(1.6);opacity:0;}
+100%{transform:translateY(-150px) scale(1.6);opacity:0;}
 }
 
 /* SLIDER */
@@ -243,8 +244,7 @@ musicStarted=true
 
 }
 
-document.addEventListener("touchstart",startMusic,{once:true})
-document.addEventListener("click",startMusic,{once:true})
+document.addEventListener("pointerdown",startMusic,{once:true})
 
 /* TYPE TEXT */
 
@@ -319,16 +319,22 @@ update()
 
 /* HEART EFFECT */
 
+let lastHeartTime=0
+
 function heartBurst(x,y){
 
-for(let i=0;i<5;i++){
+let now=Date.now()
+
+if(now-lastHeartTime<80) return  /* batasi jumlah heart */
+
+lastHeartTime=now
 
 let heart=document.createElement("div")
 heart.className="heart"
 heart.innerHTML="❤️"
 
-heart.style.left=(x+(Math.random()*60-30))+"px"
-heart.style.top=(y+(Math.random()*40-20))+"px"
+heart.style.left=x+"px"
+heart.style.top=y+"px"
 
 document.body.appendChild(heart)
 
@@ -336,26 +342,14 @@ setTimeout(()=>heart.remove(),1400)
 
 }
 
-}
+/* TAP + DRAG */
 
-/* CLICK */
-
-document.addEventListener("click",e=>{
+document.addEventListener("pointerdown",e=>{
 heartBurst(e.clientX,e.clientY)
 })
 
-/* TAP */
-
-document.addEventListener("touchstart",e=>{
-let t=e.touches[0]
-heartBurst(t.clientX,t.clientY)
-})
-
-/* SLIDE HEART */
-
-document.addEventListener("touchmove",e=>{
-let t=e.touches[0]
-heartBurst(t.clientX,t.clientY)
+document.addEventListener("pointermove",e=>{
+heartBurst(e.clientX,e.clientY)
 })
 
 /* SLIDE PAGE */
@@ -363,29 +357,11 @@ heartBurst(t.clientX,t.clientY)
 let page=0
 let startX=0
 
-document.addEventListener("touchstart",e=>{
-startX=e.touches[0].clientX
-})
-
-document.addEventListener("touchend",e=>{
-
-let endX=e.changedTouches[0].clientX
-
-if(startX-endX>50){
-if(page<2){page++;slide()}
-}
-
-if(endX-startX>50){
-if(page>0){page--;slide()}
-}
-
-})
-
-document.addEventListener("mousedown",e=>{
+document.addEventListener("pointerdown",e=>{
 startX=e.clientX
 })
 
-document.addEventListener("mouseup",e=>{
+document.addEventListener("pointerup",e=>{
 
 let endX=e.clientX
 
