@@ -19,6 +19,31 @@ color:white;
 background:black;
 }
 
+/* HEART LAYER (PALING ATAS) */
+
+#heartLayer{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:999999;
+}
+
+/* HEART */
+
+.heart{
+position:absolute;
+font-size:22px;
+animation:heartFly 1.4s forwards;
+}
+
+@keyframes heartFly{
+0%{transform:translateY(0) scale(1);opacity:1;}
+100%{transform:translateY(-160px) scale(1.6);opacity:0;}
+}
+
 /* PIN PAGE */
 
 #pinPage{
@@ -61,7 +86,7 @@ font-size:32px;
 letter-spacing:10px;
 }
 
-/* LOVE PIN BUTTON */
+/* PIN BUTTON */
 
 .keypad{
 display:grid;
@@ -85,21 +110,6 @@ box-shadow:
 0 8px 18px rgba(0,0,0,0.5),
 inset 0 0 12px rgba(255,255,255,0.4);
 cursor:pointer;
-}
-
-/* HEART EFFECT */
-
-.heart{
-position:fixed;
-font-size:20px;
-animation:heartFly 1.4s forwards;
-pointer-events:none;
-z-index:9999; /* selalu di depan */
-}
-
-@keyframes heartFly{
-0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-150px) scale(1.6);opacity:0;}
 }
 
 /* SLIDER */
@@ -135,7 +145,7 @@ text-align:center;
 font-size:20px;
 }
 
-/* HAPPY BIRTHDAY */
+/* BIRTHDAY */
 
 #birthday{
 font-size:44px;
@@ -160,6 +170,10 @@ pointer-events:none;
 </head>
 
 <body>
+
+<!-- HEART LAYER -->
+
+<div id="heartLayer"></div>
 
 <audio id="music" loop>
 <source src="risk-it-all.mp3">
@@ -319,15 +333,15 @@ update()
 
 /* HEART EFFECT */
 
-let lastHeartTime=0
+let lastHeart=0
 
 function heartBurst(x,y){
 
 let now=Date.now()
 
-if(now-lastHeartTime<80) return  /* batasi jumlah heart */
+if(now-lastHeart<80) return
 
-lastHeartTime=now
+lastHeart=now
 
 let heart=document.createElement("div")
 heart.className="heart"
@@ -336,13 +350,11 @@ heart.innerHTML="❤️"
 heart.style.left=x+"px"
 heart.style.top=y+"px"
 
-document.body.appendChild(heart)
+document.getElementById("heartLayer").appendChild(heart)
 
 setTimeout(()=>heart.remove(),1400)
 
 }
-
-/* TAP + DRAG */
 
 document.addEventListener("pointerdown",e=>{
 heartBurst(e.clientX,e.clientY)
@@ -352,7 +364,7 @@ document.addEventListener("pointermove",e=>{
 heartBurst(e.clientX,e.clientY)
 })
 
-/* SLIDE PAGE */
+/* SLIDE */
 
 let page=0
 let startX=0
