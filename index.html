@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>For You ❤️</title>
+<title>For Ikah ❤️</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -16,6 +16,7 @@ margin:0;
 overflow:hidden;
 font-family:sans-serif;
 color:white;
+background:black;
 }
 
 /* PIN PAGE */
@@ -45,11 +46,9 @@ height:100%;
 object-fit:cover;
 }
 
-/* GLASS CARD */
-
 .pinCard{
 position:relative;
-background:rgba(0,0,0,0.55);
+background:rgba(0,0,0,0.45);
 padding:25px;
 border-radius:20px;
 backdrop-filter:blur(10px);
@@ -62,40 +61,89 @@ font-size:32px;
 letter-spacing:10px;
 }
 
-/* KEYPAD */
+/* PIN BUTTON */
 
 .keypad{
 display:grid;
 grid-template-columns:repeat(3,85px);
-gap:16px;
+gap:20px;
 z-index:2;
 }
 
 .key{
-background:white;
-color:#ff4da6;
-border-radius:18px;
 height:75px;
+width:75px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:22px;
-font-weight:bold;
-box-shadow:0 8px 18px rgba(0,0,0,0.5);
+font-size:18px;
+color:white;
+
+background:rgba(255,255,255,0.15);
+border-radius:50%;
+
+backdrop-filter:blur(8px);
+box-shadow:
+0 6px 15px rgba(0,0,0,0.5),
+inset 0 0 10px rgba(255,255,255,0.4);
+
+position:relative;
 }
 
-/* HEART */
+.key:before{
+content:"❤";
+position:absolute;
+font-size:34px;
+opacity:.25;
+}
+
+.key span{
+position:relative;
+z-index:2;
+}
+
+/* HEART TAP */
 
 .heart{
 position:absolute;
-font-size:22px;
-animation:heartFly 2s forwards;
+font-size:18px;
+animation:heartFly 1.6s forwards;
 pointer-events:none;
 }
 
 @keyframes heartFly{
 0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-220px) scale(2);opacity:0;}
+100%{transform:translateY(-180px) scale(1.6);opacity:0;}
+}
+
+/* FALL HEART */
+
+.fallHeart{
+position:absolute;
+font-size:16px;
+animation:fall linear infinite;
+opacity:.6;
+}
+
+@keyframes fall{
+0%{transform:translateY(-10vh);}
+100%{transform:translateY(110vh);}
+}
+
+/* STAR */
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+border-radius:50%;
+animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+from{opacity:.2;}
+to{opacity:1;}
 }
 
 /* SLIDER */
@@ -114,11 +162,14 @@ height:100vh;
 background-size:cover;
 background-position:center;
 display:flex;
+flex-direction:column;
 align-items:center;
 justify-content:center;
 padding:40px;
 position:relative;
 }
+
+/* CARD */
 
 .card{
 background:rgba(0,0,0,0.45);
@@ -130,14 +181,15 @@ text-align:center;
 font-size:20px;
 }
 
-.flash{
-position:absolute;
-width:100%;
-height:100%;
-background:white;
+/* BIRTHDAY */
+
+#birthday{
+font-size:42px;
+font-weight:bold;
+text-shadow:0 0 20px pink,0 0 40px hotpink;
+margin-bottom:20px;
 opacity:0;
-pointer-events:none;
-transition:opacity .2s;
+transition:opacity 2s;
 }
 
 canvas{
@@ -152,7 +204,16 @@ pointer-events:none;
 
 <body>
 
-<!-- PIN -->
+<div id="stars"></div>
+<div id="fallHearts"></div>
+
+<!-- AUDIO -->
+
+<audio id="music" loop>
+<source src="risk-it-all.mp3">
+</audio>
+
+<!-- PIN PAGE -->
 
 <div id="pinPage">
 
@@ -170,21 +231,21 @@ pointer-events:none;
 
 <div class="keypad">
 
-<div class="key" onclick="press(1)">1</div>
-<div class="key" onclick="press(2)">2</div>
-<div class="key" onclick="press(3)">3</div>
+<div class="key" onclick="press(1)"><span>1</span></div>
+<div class="key" onclick="press(2)"><span>2</span></div>
+<div class="key" onclick="press(3)"><span>3</span></div>
 
-<div class="key" onclick="press(4)">4</div>
-<div class="key" onclick="press(5)">5</div>
-<div class="key" onclick="press(6)">6</div>
+<div class="key" onclick="press(4)"><span>4</span></div>
+<div class="key" onclick="press(5)"><span>5</span></div>
+<div class="key" onclick="press(6)"><span>6</span></div>
 
-<div class="key" onclick="press(7)">7</div>
-<div class="key" onclick="press(8)">8</div>
-<div class="key" onclick="press(9)">9</div>
+<div class="key" onclick="press(7)"><span>7</span></div>
+<div class="key" onclick="press(8)"><span>8</span></div>
+<div class="key" onclick="press(9)"><span>9</span></div>
 
-<div class="key" onclick="clearPin()">⌫</div>
-<div class="key" onclick="press(0)">0</div>
-<div class="key" onclick="checkPin()">OK</div>
+<div class="key" onclick="clearPin()"><span>⌫</span></div>
+<div class="key" onclick="press(0)"><span>0</span></div>
+<div class="key" onclick="checkPin()"><span>OK</span></div>
 
 </div>
 
@@ -195,52 +256,66 @@ pointer-events:none;
 <div id="slider">
 
 <div class="page" style="background-image:url('zfoto1.jpeg')">
-
 <canvas id="rain"></canvas>
-<div class="flash" id="flash"></div>
-
 <div class="card" id="text1"></div>
-
 </div>
 
 <div class="page" style="background-image:url('zfoto2.jpeg')">
-
 <div class="card" id="text2"></div>
-
 </div>
 
 <div class="page" style="background-image:url('zfoto3.jpeg')">
 
+<div id="birthday">🎂 Happy Birthday Ikah ❤️</div>
 <div class="card" id="text3"></div>
 
 </div>
 
 </div>
 
-<audio id="music" loop playsinline>
-<source src="risk-it-all.mp3">
-</audio>
-
 <script>
 
-/* TEXT TYPEWRITER */
+/* MUSIC START ON FIRST TOUCH */
 
-function typeText(id,text,speed=40){
+let musicStarted=false
+
+function startMusic(){
+
+if(!musicStarted){
+
+document.getElementById("music").play()
+musicStarted=true
+
+}
+
+}
+
+document.addEventListener("touchstart",startMusic,{once:true})
+document.addEventListener("click",startMusic,{once:true})
+
+/* TYPE TEXT */
+
+function typeText(id,text){
+
+let el=document.getElementById(id)
+el.innerHTML=""
 
 let i=0
-let el=document.getElementById(id)
 
-function type(){
+function typing(){
 
 if(i<text.length){
+
 el.innerHTML+=text.charAt(i)
 i++
-setTimeout(type,speed)
-}
+
+setTimeout(typing,40)
 
 }
 
-type()
+}
+
+typing()
 
 }
 
@@ -248,27 +323,27 @@ type()
 
 let pin=""
 const correct="160725"
-let musicStarted=false
 
 function press(n){
+
+startMusic()
 
 pin+=n
 update()
 
-if(!musicStarted){
-document.getElementById("music").play()
-musicStarted=true
-}
-
 }
 
 function clearPin(){
+
 pin=pin.slice(0,-1)
 update()
+
 }
 
 function update(){
+
 document.getElementById("display").innerText="*".repeat(pin.length)
+
 }
 
 function checkPin(){
@@ -277,15 +352,14 @@ if(pin===correct){
 
 document.getElementById("pinPage").style.display="none"
 
-typeText("text1","Bahkan saat hidup terasa seperti badai, kamu selalu ada di sana.")
-typeText("text2","Perlahan semuanya menjadi lebih tenang karena ada kamu.")
-typeText("text3","Terima kasih sudah hadir dalam hidupku ❤️")
+typeText("text1","Bahkan saat hidup terasa seperti badai, kamu selalu ada.")
 
-startStorm(400,true)
+startStorm(350)
 
 }else{
 
 alert("Masih ingat tanggal pertama kita bertemu? ❤️")
+
 pin=""
 update()
 
@@ -293,46 +367,14 @@ update()
 
 }
 
-/* HEART */
-
-function heartBurst(x,y){
-
-for(let i=0;i<30;i++){
-
-let heart=document.createElement("div")
-
-heart.className="heart"
-heart.innerHTML="❤️"
-
-heart.style.left=(x+(Math.random()*200-100))+"px"
-heart.style.top=(y+(Math.random()*100-50))+"px"
-
-document.body.appendChild(heart)
-
-setTimeout(()=>heart.remove(),2000)
-
-}
-
-}
-
-/* TOUCH */
+/* SLIDE */
 
 let page=0
 let startX=0
 
 document.addEventListener("touchstart",e=>{
 
-let t=e.touches[0]
-
-startX=t.clientX
-heartBurst(t.clientX,t.clientY)
-
-})
-
-document.addEventListener("touchmove",e=>{
-
-let t=e.touches[0]
-heartBurst(t.clientX,t.clientY)
+startX=e.touches[0].clientX
 
 })
 
@@ -350,21 +392,46 @@ if(page>0){page--;slide()}
 
 })
 
-/* SLIDE */
-
 function slide(){
 
 document.getElementById("slider").style.transform=
 "translateX(-"+page*100+"vw)"
 
 if(page==1){
-startStorm(150,false)
+
+typeText("text2","Semua terasa lebih tenang sejak ada kamu.")
+
+startStorm(120)
+
 }
 
 if(page==2){
+
+typeText("text3","Terima kasih sudah hadir dalam hidupku.")
+
+document.getElementById("birthday").style.opacity=1
+
 stopRain()
 startConfetti()
+
 }
+
+}
+
+/* CONFETTI */
+
+function startConfetti(){
+
+setInterval(()=>{
+
+confetti({
+particleCount:80,
+spread:60,
+origin:{x:Math.random(),y:0},
+colors:["#ff4d6d","#ffd166","#06d6a0","#118ab2","#9b5de5","#f15bb5"]
+})
+
+},250)
 
 }
 
@@ -374,9 +441,8 @@ let drops=[]
 let ctx
 let canvas
 let rainInterval
-let lightningInterval
 
-function startStorm(intensity,light){
+function startStorm(intensity){
 
 canvas=document.getElementById("rain")
 ctx=canvas.getContext("2d")
@@ -391,20 +457,15 @@ for(let i=0;i<intensity;i++){
 drops.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-speed:5+Math.random()*5,
-len:12+Math.random()*10
+speed:5,
+len:15
 })
 
 }
 
 clearInterval(rainInterval)
-rainInterval=setInterval(drawRain,30)
 
-if(light){
-startLightning()
-}else{
-clearInterval(lightningInterval)
-}
+rainInterval=setInterval(drawRain,30)
 
 }
 
@@ -413,19 +474,21 @@ function drawRain(){
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
 ctx.strokeStyle="rgba(255,255,255,0.8)"
-ctx.lineWidth=1.2
+
 ctx.beginPath()
 
 for(let d of drops){
 
 ctx.moveTo(d.x,d.y)
+
 ctx.lineTo(d.x,d.y+d.len)
 
 d.y+=d.speed
 
 if(d.y>canvas.height){
+
 d.y=-20
-d.x=Math.random()*canvas.width
+
 }
 
 }
@@ -435,45 +498,42 @@ ctx.stroke()
 }
 
 function stopRain(){
+
 clearInterval(rainInterval)
-drops=[]
-}
-
-/* LIGHTNING */
-
-function startLightning(){
-
-let flash=document.getElementById("flash")
-
-clearInterval(lightningInterval)
-
-lightningInterval=setInterval(()=>{
-
-flash.style.opacity=0.9
-setTimeout(()=>flash.style.opacity=0,120)
-
-},6000)
 
 }
 
-/* CONFETTI */
+/* STARS */
 
-function startConfetti(){
+for(let i=0;i<60;i++){
 
-setInterval(()=>{
+let s=document.createElement("div")
 
-confetti({
-particleCount:60,
-spread:40,
-startVelocity:30,
-gravity:1.2,
-ticks:300,
-scalar:1.4,
-origin:{x:Math.random(),y:0},
-colors:["#ff4da6","#ffffff","#ff1a75"]
-})
+s.className="star"
 
-},250)
+s.style.left=Math.random()*100+"vw"
+
+s.style.top=Math.random()*100+"vh"
+
+document.getElementById("stars").appendChild(s)
+
+}
+
+/* FALL HEART */
+
+for(let i=0;i<15;i++){
+
+let h=document.createElement("div")
+
+h.className="fallHeart"
+
+h.innerHTML="❤"
+
+h.style.left=Math.random()*100+"vw"
+
+h.style.animationDuration=6+Math.random()*6+"s"
+
+document.getElementById("fallHearts").appendChild(h)
 
 }
 
