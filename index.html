@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,7 @@ color:white;
 background:black;
 }
 
-/* HEART LAYER */
+/* HEART EFFECT */
 
 #heartLayer{
 position:fixed;
@@ -125,7 +126,6 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-padding:20px;
 position:relative;
 }
 
@@ -133,28 +133,30 @@ position:relative;
 
 .pageTitle{
 position:absolute;
-top:40px;
+top:70px;
 left:50%;
 transform:translateX(-50%);
-font-size:clamp(20px,3vw,30px);
+font-size:36px;
 text-align:center;
-background:rgba(0,0,0,0.55);
-padding:12px 20px;
-border-radius:20px;
+
+text-shadow:
+0 0 20px #ff4da6,
+0 0 40px #ff4da6,
+0 0 60px #ff4da6;
 }
 
 /* CARD */
 
 .card{
+margin-top:60px;
 background:rgba(0,0,0,0.55);
-padding:20px;
+padding:25px;
 border-radius:20px;
 max-width:520px;
-width:90%;
+width:520px;
 display:flex;
 flex-direction:column;
 gap:10px;
-font-size:clamp(15px,2vw,18px);
 line-height:1.6;
 }
 
@@ -165,8 +167,8 @@ padding:10px 15px;
 border-radius:16px;
 max-width:85%;
 background:rgba(255,255,255,0.15);
-animation:fadeUp .5s ease;
 align-self:flex-start;
+animation:fadeUp .5s ease;
 }
 
 .typing{
@@ -182,41 +184,26 @@ to{opacity:1;transform:translateY(0);}
 /* PAGE 3 */
 
 #birthday{
-font-size:clamp(28px,5vw,44px);
+font-size:44px;
 font-weight:bold;
+margin-bottom:20px;
+opacity:0;
+transition:opacity 2s;
+
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
 0 0 60px #ff4da6;
-margin-bottom:20px;
-opacity:0;
-transition:opacity 2s;
-text-align:center;
 }
 
 #letter{
 max-width:520px;
-width:90%;
+width:520px;
 line-height:1.8;
-font-size:clamp(15px,2vw,18px);
+font-size:17px;
 background:rgba(0,0,0,0.55);
-padding:20px;
+padding:25px;
 border-radius:20px;
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-.pinBG{
-grid-template-columns:1fr;
-}
-
-.pinBG img:nth-child(2),
-.pinBG img:nth-child(3){
-display:none;
-}
-
 }
 
 </style>
@@ -226,8 +213,8 @@ display:none;
 
 <div id="heartLayer"></div>
 
-<audio id="music" loop>
-<source src="risk-it-all.mp3">
+<audio id="music" loop preload="auto">
+<source src="risk-it-all.mp3" type="audio/mpeg">
 </audio>
 
 <!-- PIN PAGE -->
@@ -243,7 +230,11 @@ display:none;
 <div class="pinCard">
 
 <h2>🔐 Secret Code</h2>
-<p>Clue: tanggal pertama kita bertemu ❤️</p>
+
+<p>
+Clue:<br>
+Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍
+</p>
 
 <div id="display" class="pinDisplay">______</div>
 
@@ -277,11 +268,7 @@ display:none;
 
 <div class="page" style="background-image:url('zfoto1.jpeg')">
 
-<div class="pageTitle">
-❤️ Dimana semua ini dimulai ❤️
-</div>
-
-<canvas id="rain"></canvas>
+<div class="pageTitle">Dimana semua ini dimulai 🐻‍❄️</div>
 
 <div class="card" id="text1"></div>
 
@@ -289,9 +276,7 @@ display:none;
 
 <div class="page" style="background-image:url('zfoto2.jpeg')">
 
-<div class="pageTitle">
-❤️ Tentang kita yang belajar memahami ❤️
-</div>
+<div class="pageTitle">Tentang kita yang belajar memahami 🤍</div>
 
 <div class="card" id="text2"></div>
 
@@ -309,25 +294,21 @@ display:none;
 
 <script>
 
-/* HEART EFFECT */
+/* HEART */
 
 function createHeart(x,y){
-
 let heart=document.createElement("div")
 heart.className="heart"
 heart.innerHTML="❤️"
-
 heart.style.left=x+"px"
 heart.style.top=y+"px"
-
 document.getElementById("heartLayer").appendChild(heart)
-
 setTimeout(()=>heart.remove(),1500)
-
 }
 
 document.addEventListener("pointerdown",e=>{
 createHeart(e.clientX,e.clientY)
+startMusic()
 })
 
 /* MUSIC */
@@ -336,20 +317,17 @@ let musicStarted=false
 
 function startMusic(){
 if(!musicStarted){
-document.getElementById("music").play()
+let music=document.getElementById("music")
+music.play().catch(()=>{})
 musicStarted=true
 }
 }
 
-document.addEventListener("pointerdown",startMusic,{once:true})
-
-/* CHAT BUBBLES WITH TYPING */
+/* BUBBLE CHAT */
 
 function showBubbles(id,text){
 
 let el=document.getElementById(id)
-el.innerHTML=""
-
 let bubbles=text.match(/<div class='chat.*?<\/div>/g)
 
 let i=0
@@ -364,23 +342,13 @@ typing.innerText="... sedang mengetik"
 
 el.appendChild(typing)
 
-let bubbleHTML=bubbles[i]
-
-let plain=bubbleHTML.replace(/<[^>]*>/g,"")
-
-let words=plain.split(/\s+/).length
-
-let delay=Math.max(1200,words*320)
-
 setTimeout(()=>{
 
 typing.remove()
-
-el.innerHTML+=bubbleHTML
+el.innerHTML+=bubbles[i]
 
 i++
-
-setTimeout(next,delay)
+setTimeout(next,1200)
 
 },1000)
 
@@ -392,32 +360,22 @@ next()
 
 }
 
-/* TYPE LETTER */
+/* TYPE PARAGRAPH */
 
-function typeLetter(text){
+function typeParagraph(text){
 
 let el=document.getElementById("letter")
 let i=0
 
-function type(){
-
+function typing(){
 if(i<text.length){
-
-if(text.charAt(i)=="\n"){
-el.innerHTML+="<br><br>"
-}else{
 el.innerHTML+=text.charAt(i)
-}
-
 i++
-
-setTimeout(type,35)
-
+setTimeout(typing,30)
+}
 }
 
-}
-
-type()
+typing()
 
 }
 
@@ -427,7 +385,6 @@ let pin=""
 const correct="160725"
 
 function press(n){
-startMusic()
 pin+=n
 update()
 }
@@ -448,20 +405,15 @@ if(pin===correct){
 document.getElementById("pinPage").style.display="none"
 
 showBubbles("text1",
-"<div class='chat'>Yeayyyy... 😆</div>"+
-"<div class='chat'>Kalau kamu bisa buka PIN ini berarti kamu masih inget awal kita interaksi.</div>"+
-"<div class='chat'>Iseng mau throwback ke awal kita kenal.</div>"+
-"<div class='chat'>Karena kemarin kamu bilang seneng bisa ketemu aku.</div>"+
-"<div class='chat'>Jadi aku mau tes kamu 😋</div>"+
-"<div class='chat'>Kalau bener masih inget... harusnya kamu bisa buka PIN ini 😗❤️</div>"
-)
 
-startStorm(300)
+"<div class='chat'>Yeayyyy... kalo kamu bisa buka pinnya berarti kamu masih inget awal kita interaksii😆</div>"+
+"<div class='chat'>Iseng mau throwback awal kita interaksi karna kamu kemaren ngucapin seneng bisa ketemu aku jadi mau tes kamu kalo bener harus bisa buka pin ini😋😗</div>"
+
+)
 
 }else{
 
-alert("Masih ingat tanggal pertama kita bertemu? ❤️")
-
+alert("Masih ingat awal cerita kita? 🤍")
 pin=""
 update()
 
@@ -494,20 +446,17 @@ if(page>0){page--;slide()}
 
 function slide(){
 
-document.getElementById("slider").style.transform=
-"translateX(-"+page*100+"vw)"
+document.getElementById("slider").style.transform="translateX(-"+page*100+"vw)"
 
 if(page==1){
 
 showBubbles("text2",
-"<div class='chat'>Tbh...</div>"+
-"<div class='chat'>Walaupun aku yakin kita bakal bertahan sampai sekarang.</div>"+
-"<div class='chat'>Aku tetap ngerasa amaze kita masih bisa sejauh ini 🥹</div>"+
-"<div class='chat'>Glad to meet you and finally have you.</div>"+
-"<div class='chat'>Semoga kita terus belajar memahami satu sama lain.</div>"
-)
 
-startStorm(150)
+"<div class='chat'>Tbh walaupun aku yakin kita bakal bertahan sampe sekarang, aku tetep ngerasa amaze kita masih bertahan🥹</div>"+
+"<div class='chat'>Glad to meet you and finally have you bee.. sekarang kita udah sampe di hari bahagia yaitu ulang tahun kita</div>"+
+"<div class='chat'>semoga bisa naik jenjang kebahagiaan kita sampe ketemu hari bahagia berikutnya yang kita nantiin jugaa sayangg😝🥰😚</div>"
+
+)
 
 }
 
@@ -515,15 +464,12 @@ if(page==2){
 
 document.getElementById("birthday").style.opacity=1
 
-typeLetter(
-"Selamat ulang tahun sayang.\n\n"+
-"Semoga kamu selalu diberikan kesehatan, kebahagiaan, dan keberkahan.\n\n"+
-"Aku bersyukur bisa mengenal kamu dan menjalani semua proses ini bersama kamu.\n\n"+
-"Semoga kita selalu saling mengerti, saling menjaga, dan berjalan bersama sampai ke banyak hari bahagia lainnya.\n\n"+
-"Happy Birthday Ikah ❤️"
+typeParagraph(
+
+"Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳 Happy Birtday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu, diberikan rezeki yang berlimpah, selalu diberi keberkahan untuk hidup kamu dan selalu selalu sayang sama akuuu walaupun aku sering ngambek (karna kamu juga yang nyebelin).. dan untuk kita berduaa semoga kita bisa saling mengerti satu sama lain dan bisa memberikan effort terbaik untuk hubungan kita supaya bisa longlastt🥰❤️✨"
+
 )
 
-stopRain()
 startConfetti()
 
 }
@@ -542,74 +488,12 @@ spread:70,
 origin:{x:Math.random(),y:0}
 })
 
-},300)
+},400)
 
-}
-
-/* RAIN */
-
-let drops=[]
-let ctx
-let canvas
-let rainInterval
-
-function startStorm(intensity){
-
-canvas=document.getElementById("rain")
-ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-drops=[]
-
-for(let i=0;i<intensity;i++){
-
-drops.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-speed:5,
-len:15
-})
-
-}
-
-clearInterval(rainInterval)
-
-rainInterval=setInterval(drawRain,30)
-
-}
-
-function drawRain(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-ctx.strokeStyle="rgba(255,255,255,0.8)"
-
-ctx.beginPath()
-
-for(let d of drops){
-
-ctx.moveTo(d.x,d.y)
-ctx.lineTo(d.x,d.y+d.len)
-
-d.y+=d.speed
-
-if(d.y>canvas.height){
-d.y=-20
-}
-
-}
-
-ctx.stroke()
-
-}
-
-function stopRain(){
-clearInterval(rainInterval)
 }
 
 </script>
 
 </body>
 </html>
+```
