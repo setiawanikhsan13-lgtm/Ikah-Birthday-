@@ -139,6 +139,8 @@ left:50%;
 transform:translateX(-50%);
 font-size:32px;
 text-align:center;
+opacity:0;
+transition:opacity 2s;
 
 text-shadow:
 0 0 20px #ff4da6,
@@ -182,7 +184,7 @@ from{opacity:0;transform:translateY(10px);}
 to{opacity:1;transform:translateY(0);}
 }
 
-/* NAVIGATION */
+/* NAV */
 
 .nav{
 position:absolute;
@@ -193,13 +195,8 @@ padding:8px 15px;
 border-radius:20px;
 }
 
-.leftNav{
-left:20px;
-}
-
-.rightNav{
-right:20px;
-}
+.leftNav{ left:20px; }
+.rightNav{ right:20px; }
 
 /* PAGE 3 */
 
@@ -225,6 +222,12 @@ font-size:16px;
 background:rgba(0,0,0,0.55);
 padding:20px;
 border-radius:20px;
+}
+
+.signature{
+text-align:right;
+margin-top:20px;
+font-weight:bold;
 }
 
 </style>
@@ -291,7 +294,7 @@ Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍
 
 <div class="page" style="background-image:url('zfoto1.jpeg')">
 
-<div class="pageTitle">Dimana semua ini dimulai 🐻‍❄️</div>
+<div class="pageTitle" id="title1">Dimana semua ini dimulai 🐻‍❄️</div>
 
 <div class="card" id="text1"></div>
 
@@ -303,7 +306,7 @@ Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍
 
 <div class="page" style="background-image:url('zfoto2.jpeg')">
 
-<div class="pageTitle">Tentang kita yang belajar memahami 🤍</div>
+<div class="pageTitle" id="title2">Tentang kita yang belajar memahami 🤍</div>
 
 <div class="card" id="text2"></div>
 
@@ -401,16 +404,33 @@ next()
 
 /* LETTER TYPING */
 
-function typeParagraph(text){
+let letterDone=false
+
+function typeLetter(){
+
+if(letterDone) return
 
 let el=document.getElementById("letter")
+
+let text=`Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳
+
+Happy Birtday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu, diberikan rezeki yang berlimpah, selalu diberi keberkahan untuk hidup kamu dan selalu selalu sayang sama akuuu walaupun aku sering ngambek (karna kamu juga yang nyebelin)😤
+
+Untuk kita berduaa semoga kita bisa saling mengerti satu sama lain dan bisa memberikan effort terbaik untuk hubungan kita supaya bisa longlastt🥰❤️✨
+`
+
 let i=0
 
 function typing(){
 if(i<text.length){
 el.innerHTML+=text.charAt(i)
 i++
-setTimeout(typing,28)
+setTimeout(typing,25)
+}else{
+
+el.innerHTML+=`<div class="signature">- Your Lovely, Ikhsan❤️</div>`
+letterDone=true
+
 }
 }
 
@@ -442,6 +462,8 @@ function checkPin(){
 if(pin===correct){
 
 document.getElementById("pinPage").style.display="none"
+
+document.getElementById("title1").style.opacity=1
 
 showBubbles("text1",
 
@@ -498,6 +520,8 @@ document.getElementById("slider").style.transform="translateX(-"+page*100+"vw)"
 
 if(page==1){
 
+document.getElementById("title2").style.opacity=1
+
 showBubbles("text2",
 
 "<div class='chat'>Tbh..</div>"+
@@ -519,7 +543,7 @@ if(page==2){
 
 document.getElementById("birthday").style.opacity=1
 
-typeParagraph("Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳 Happy Birthday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu...")
+typeLetter()
 
 startConfetti()
 
