@@ -80,7 +80,7 @@ max-width:90vw;
 }
 
 .pinDisplay{
-font-size:28px;
+font-size:30px;
 letter-spacing:10px;
 margin-top:10px;
 }
@@ -89,20 +89,22 @@ margin-top:10px;
 
 .keypad{
 display:grid;
-grid-template-columns:repeat(3,70px);
+grid-template-columns:repeat(3,75px);
 gap:15px;
 margin-top:20px;
+z-index:2;
 }
 
 .key{
-height:65px;
-width:65px;
+height:70px;
+width:70px;
 display:flex;
 align-items:center;
 justify-content:center;
 font-size:20px;
 background:rgba(255,255,255,0.15);
 border-radius:50%;
+cursor:pointer;
 }
 
 /* SLIDER */
@@ -137,6 +139,7 @@ left:50%;
 transform:translateX(-50%);
 font-size:32px;
 text-align:center;
+
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
@@ -146,7 +149,7 @@ text-shadow:
 /* CARD */
 
 .card{
-margin-top:80px;
+margin-top:90px;
 background:rgba(0,0,0,0.55);
 padding:20px;
 border-radius:20px;
@@ -156,7 +159,6 @@ display:flex;
 flex-direction:column;
 gap:10px;
 line-height:1.6;
-overflow:hidden;
 }
 
 /* CHAT */
@@ -180,16 +182,15 @@ from{opacity:0;transform:translateY(10px);}
 to{opacity:1;transform:translateY(0);}
 }
 
-/* NAV BUTTON */
+/* NAVIGATION */
 
 .nav{
 position:absolute;
 bottom:25px;
-font-size:16px;
-background:rgba(0,0,0,0.55);
-padding:8px 14px;
+font-size:15px;
+background:rgba(0,0,0,0.6);
+padding:8px 15px;
 border-radius:20px;
-cursor:pointer;
 }
 
 .leftNav{
@@ -233,7 +234,7 @@ border-radius:20px;
 
 <div id="heartLayer"></div>
 
-<audio id="music" loop preload="auto">
+<audio id="music" loop>
 <source src="risk-it-all.mp3">
 </audio>
 
@@ -251,7 +252,10 @@ border-radius:20px;
 
 <h2>🔐 Secret Code</h2>
 
-<p>Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍</p>
+<p>
+Clue:<br>
+Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍
+</p>
 
 <div id="display" class="pinDisplay">______</div>
 
@@ -291,7 +295,7 @@ border-radius:20px;
 
 <div class="card" id="text1"></div>
 
-<div class="nav rightNav" id="next1" style="display:none">Slide Next ➜</div>
+<div id="next1" class="nav rightNav" style="display:none">Slide Next ➜</div>
 
 </div>
 
@@ -304,7 +308,8 @@ border-radius:20px;
 <div class="card" id="text2"></div>
 
 <div class="nav leftNav">⬅ Slide Back</div>
-<div class="nav rightNav" id="next2" style="display:none">Slide Next ➜</div>
+
+<div id="next2" class="nav rightNav" style="display:none">Slide Next ➜</div>
 
 </div>
 
@@ -324,30 +329,27 @@ border-radius:20px;
 
 <script>
 
-/* HEART */
+/* HEART + MUSIC */
+
+let musicStarted=false
 
 document.addEventListener("pointerdown",e=>{
+
 let heart=document.createElement("div")
 heart.className="heart"
 heart.innerHTML="❤️"
 heart.style.left=e.clientX+"px"
 heart.style.top=e.clientY+"px"
 document.getElementById("heartLayer").appendChild(heart)
+
 setTimeout(()=>heart.remove(),1500)
-})
 
-/* MUSIC */
-
-let musicStarted=false
-
-function startMusic(){
 if(!musicStarted){
 document.getElementById("music").play().catch(()=>{})
 musicStarted=true
 }
-}
 
-document.addEventListener("pointerdown",startMusic,{once:true})
+})
 
 /* BUBBLE CHAT */
 
@@ -374,6 +376,7 @@ el.appendChild(typing)
 setTimeout(()=>{
 
 typing.remove()
+
 el.innerHTML+=bubbles[i]
 
 i++
@@ -396,7 +399,7 @@ next()
 
 }
 
-/* TYPE LETTER */
+/* LETTER TYPING */
 
 function typeParagraph(text){
 
@@ -447,7 +450,6 @@ showBubbles("text1",
 "<div class='chat'>Iseng mau throwback awal kita interaksi..</div>"+
 "<div class='chat'>Karna kamu kemaren ngucapin seneng bisa ketemu aku</div>"+
 "<div class='chat'>Jadi mau tes kamu hihihi</div>"+
-
 "<div class='chat'>kalo bener harus bisa buka pin ini😋😗</div>"
 
 ,()=>{
@@ -517,11 +519,7 @@ if(page==2){
 
 document.getElementById("birthday").style.opacity=1
 
-typeParagraph(
-
-"Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳 Happy Birthday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu..."
-
-)
+typeParagraph("Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳 Happy Birthday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu...")
 
 startConfetti()
 
