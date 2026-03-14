@@ -20,7 +20,7 @@ color:white;
 background:black;
 }
 
-/* HEART EFFECT */
+/* HEART */
 
 #heartLayer{
 position:fixed;
@@ -138,7 +138,6 @@ left:50%;
 transform:translateX(-50%);
 font-size:36px;
 text-align:center;
-
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
@@ -189,7 +188,6 @@ font-weight:bold;
 margin-bottom:20px;
 opacity:0;
 transition:opacity 2s;
-
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
@@ -306,22 +304,23 @@ document.getElementById("heartLayer").appendChild(heart)
 setTimeout(()=>heart.remove(),1500)
 }
 
-document.addEventListener("pointerdown",e=>{
-createHeart(e.clientX,e.clientY)
-startMusic()
-})
-
-/* MUSIC */
+/* MUSIC FIX */
 
 let musicStarted=false
 
 function startMusic(){
 if(!musicStarted){
 let music=document.getElementById("music")
+music.volume=0.7
 music.play().catch(()=>{})
 musicStarted=true
 }
 }
+
+document.addEventListener("pointerdown",e=>{
+createHeart(e.clientX,e.clientY)
+startMusic()
+})
 
 /* BUBBLE CHAT */
 
@@ -350,7 +349,7 @@ el.innerHTML+=bubbles[i]
 i++
 setTimeout(next,1200)
 
-},1000)
+},900)
 
 }
 
@@ -371,7 +370,7 @@ function typing(){
 if(i<text.length){
 el.innerHTML+=text.charAt(i)
 i++
-setTimeout(typing,30)
+setTimeout(typing,28)
 }
 }
 
@@ -406,8 +405,12 @@ document.getElementById("pinPage").style.display="none"
 
 showBubbles("text1",
 
-"<div class='chat'>Yeayyyy... kalo kamu bisa buka pinnya berarti kamu masih inget awal kita interaksii😆</div>"+
-"<div class='chat'>Iseng mau throwback awal kita interaksi karna kamu kemaren ngucapin seneng bisa ketemu aku jadi mau tes kamu kalo bener harus bisa buka pin ini😋😗</div>"
+"<div class='chat'>Yeayyyy...</div>"+
+"<div class='chat'>kalo kamu bisa buka pinnya berarti kamu masih inget awal kita interaksii😆</div>"+
+"<div class='chat'>Iseng mau throwback awal kita interaksi..</div>"+
+"<div class='chat'>Karna kamu kemaren ngucapin seneng bisa ketemu aku</div>"+
+"<div class='chat'>Jadi mau tes kamu hihihi</div>"+
+"<div class='chat'>kalo bener seneng harusnya bisa buka pin ini😋😗</div>"
 
 )
 
@@ -452,9 +455,12 @@ if(page==1){
 
 showBubbles("text2",
 
-"<div class='chat'>Tbh walaupun aku yakin kita bakal bertahan sampe sekarang, aku tetep ngerasa amaze kita masih bertahan🥹</div>"+
-"<div class='chat'>Glad to meet you and finally have you bee.. sekarang kita udah sampe di hari bahagia yaitu ulang tahun kita</div>"+
-"<div class='chat'>semoga bisa naik jenjang kebahagiaan kita sampe ketemu hari bahagia berikutnya yang kita nantiin jugaa sayangg😝🥰😚</div>"
+"<div class='chat'>Tbh..</div>"+
+"<div class='chat'>Walaupun aku yakin kita bakal bertahan sampe sekarang</div>"+
+"<div class='chat'>Aku tetep ngerasa amaze kita masih bertahan🥹</div>"+
+"<div class='chat'>Glad to meet you and finally have you bee..</div>"+
+"<div class='chat'>Sekarang kita udah sampe di hari bahagia yaitu ulang tahun kita</div>"+
+"<div class='chat'>Semoga bisa naik jenjang kebahagiaan kita sampe ketemu hari bahagia berikutnya yang kita nantiin jugaa sayangg😝🥰😚</div>"
 
 )
 
