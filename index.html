@@ -126,17 +126,19 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 position:relative;
+overflow:hidden;
 }
 
 /* TITLE */
 
 .pageTitle{
 position:absolute;
-top:70px;
+top:40px;
 left:50%;
 transform:translateX(-50%);
-font-size:36px;
+font-size:34px;
 text-align:center;
+
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
@@ -151,11 +153,12 @@ background:rgba(0,0,0,0.55);
 padding:25px;
 border-radius:20px;
 max-width:520px;
-width:520px;
+width:90%;
 display:flex;
 flex-direction:column;
 gap:10px;
 line-height:1.6;
+overflow:hidden;
 }
 
 /* CHAT */
@@ -179,23 +182,39 @@ from{opacity:0;transform:translateY(10px);}
 to{opacity:1;transform:translateY(0);}
 }
 
+/* ARROW */
+
+.nextArrow{
+position:absolute;
+right:30px;
+bottom:40px;
+font-size:40px;
+animation:arrowMove 1s infinite alternate;
+}
+
+@keyframes arrowMove{
+from{transform:translateX(0)}
+to{transform:translateX(10px)}
+}
+
 /* PAGE 3 */
 
 #birthday{
 font-size:44px;
 font-weight:bold;
-margin-bottom:20px;
-opacity:0;
-transition:opacity 2s;
 text-shadow:
 0 0 20px #ff4da6,
 0 0 40px #ff4da6,
 0 0 60px #ff4da6;
+
+margin-bottom:20px;
+opacity:0;
+transition:opacity 2s;
 }
 
 #letter{
 max-width:520px;
-width:520px;
+width:90%;
 line-height:1.8;
 font-size:17px;
 background:rgba(0,0,0,0.55);
@@ -210,8 +229,8 @@ border-radius:20px;
 
 <div id="heartLayer"></div>
 
-<audio id="music" loop preload="auto">
-<source src="risk-it-all.mp3" type="audio/mpeg">
+<audio id="music" loop>
+<source src="risk-it-all.mp3">
 </audio>
 
 <!-- PIN PAGE -->
@@ -264,68 +283,69 @@ Hari dimana "hai" sederhana berubah jadi cerita panjang kita 🤍
 <div id="slider">
 
 <div class="page" style="background-image:url('zfoto1.jpeg')">
-
-<div class="pageTitle">Dimana semua ini dimulai 🐻‍❄️</div>
-
+<div class="pageTitle">Dimana semua ini dimulai</div>
 <div class="card" id="text1"></div>
-
 </div>
 
 <div class="page" style="background-image:url('zfoto2.jpeg')">
-
-<div class="pageTitle">Tentang kita yang belajar memahami 🤍</div>
-
+<div class="pageTitle">Tentang kita yang belajar memahami</div>
 <div class="card" id="text2"></div>
-
 </div>
 
 <div class="page" style="background-image:url('zfoto3.jpeg')">
-
 <div id="birthday">🎂 Happy Birthday Ikah ❤️</div>
-
-<div id="letter"></div>
-
+<div id="letter">Semoga di umur kamu yang baru ini, semua hal baik datang satu per satu. Terima kasih sudah hadir dalam hidupku dan menjadi bagian dari cerita yang tidak pernah aku duga sebelumnya. 🤍</div>
 </div>
 
 </div>
 
 <script>
 
+let page=0
+let page1Done=false
+let page2Done=false
+
 /* HEART */
 
 function createHeart(x,y){
+
 let heart=document.createElement("div")
 heart.className="heart"
 heart.innerHTML="❤️"
 heart.style.left=x+"px"
 heart.style.top=y+"px"
+
 document.getElementById("heartLayer").appendChild(heart)
+
 setTimeout(()=>heart.remove(),1500)
+
 }
 
-/* MUSIC FIX */
+document.addEventListener("pointerdown",e=>{
+createHeart(e.clientX,e.clientY)
+})
+
+/* MUSIC */
 
 let musicStarted=false
 
 function startMusic(){
 if(!musicStarted){
-let music=document.getElementById("music")
-music.volume=0.7
-music.play().catch(()=>{})
+document.getElementById("music").play()
 musicStarted=true
 }
 }
 
-document.addEventListener("pointerdown",e=>{
-createHeart(e.clientX,e.clientY)
-startMusic()
-})
+document.addEventListener("pointerdown",startMusic,{once:true})
 
-/* BUBBLE CHAT */
+/* BUBBLES */
 
-function showBubbles(id,text){
+function showBubbles(id,text,callback){
 
 let el=document.getElementById(id)
+
+if(el.dataset.done) return
+
 let bubbles=text.match(/<div class='chat.*?<\/div>/g)
 
 let i=0
@@ -343,12 +363,20 @@ el.appendChild(typing)
 setTimeout(()=>{
 
 typing.remove()
+
 el.innerHTML+=bubbles[i]
 
 i++
+
 setTimeout(next,1200)
 
-},900)
+},1000)
+
+}else{
+
+el.dataset.done=true
+
+if(callback)callback()
 
 }
 
@@ -358,22 +386,15 @@ next()
 
 }
 
-/* TYPE PARAGRAPH */
+/* ARROW */
 
-function typeParagraph(text){
+function showArrow(pageIndex){
 
-let el=document.getElementById("letter")
-let i=0
+let arrow=document.createElement("div")
+arrow.className="nextArrow"
+arrow.innerHTML="➜"
 
-function typing(){
-if(i<text.length){
-el.innerHTML+=text.charAt(i)
-i++
-setTimeout(typing,28)
-}
-}
-
-typing()
+document.querySelectorAll(".page")[pageIndex].appendChild(arrow)
 
 }
 
@@ -404,14 +425,13 @@ document.getElementById("pinPage").style.display="none"
 
 showBubbles("text1",
 
-"<div class='chat'>Yeayyyy...</div>"+
-"<div class='chat'>kalo kamu bisa buka pinnya berarti kamu masih inget awal kita interaksii😆</div>"+
-"<div class='chat'>Iseng mau throwback awal kita interaksi..</div>"+
-"<div class='chat'>Karna kamu kemaren ngucapin seneng bisa ketemu aku</div>"+
-"<div class='chat'>Jadi mau tes kamu hihihi</div>"+
-"<div class='chat'>kalo bener seneng harusnya bisa buka pin ini😋😗</div>"
+"<div class='chat'>Yeayyyy 😆</div>"+
+"<div class='chat'>Kalau kamu bisa buka PIN ini berarti kamu masih inget awal kita interaksi.</div>"+
+"<div class='chat'>Iseng mau throwback ke awal kita kenal.</div>"+
+"<div class='chat'>Karena kemarin kamu bilang seneng bisa ketemu aku.</div>"+
+"<div class='chat'>Jadi aku mau tes kamu 😋</div>"
 
-)
+,()=>showArrow(0))
 
 }else{
 
@@ -425,7 +445,6 @@ update()
 
 /* SLIDE */
 
-let page=0
 let startX=0
 
 document.addEventListener("pointerdown",e=>{
@@ -448,32 +467,28 @@ if(page>0){page--;slide()}
 
 function slide(){
 
-document.getElementById("slider").style.transform="translateX(-"+page*100+"vw)"
+document.getElementById("slider").style.transform=
+"translateX(-"+page*100+"vw)"
 
-if(page==1){
+if(page==1 && !page2Done){
+
+page2Done=true
 
 showBubbles("text2",
 
-"<div class='chat'>Tbh..</div>"+
-"<div class='chat'>Walaupun aku yakin kita bakal bertahan sampe sekarang</div>"+
-"<div class='chat'>Aku tetep ngerasa amaze kita masih bertahan🥹</div>"+
-"<div class='chat'>Glad to meet you and finally have you bee..</div>"+
-"<div class='chat'>Sekarang kita udah sampe di hari bahagia yaitu ulang tahun kita</div>"+
-"<div class='chat'>Semoga bisa naik jenjang kebahagiaan kita sampe ketemu hari bahagia berikutnya yang kita nantiin jugaa sayangg😝🥰😚</div>"
+"<div class='chat'>Tbh...</div>"+
+"<div class='chat'>Walaupun aku yakin kita bakal bertahan sampai sekarang.</div>"+
+"<div class='chat'>Aku tetap ngerasa amaze kita masih bisa sejauh ini 🥹</div>"+
+"<div class='chat'>Glad to meet you and finally have you.</div>"+
+"<div class='chat'>Semoga kita terus belajar memahami satu sama lain 🤍</div>"
 
-)
+,()=>showArrow(1))
 
 }
 
 if(page==2){
 
 document.getElementById("birthday").style.opacity=1
-
-typeParagraph(
-
-"Untuk sekarang kita rayain hari bahagia untuk kamu duluu yang baru aja menginjak umur 24 tahunnn!!!🥳🥳 Happy Birtday sayanggg.. semoga diumur yang sekarang ini kamu selalu diberikan kesehatan serta keselamatan di setiap langkah kamuu, diberikan rezeki yang berlimpah, selalu diberi keberkahan untuk hidup kamu dan selalu selalu sayang sama akuuu walaupun aku sering ngambek (karna kamu juga yang nyebelin).. dan untuk kita berduaa semoga kita bisa saling mengerti satu sama lain dan bisa memberikan effort terbaik untuk hubungan kita supaya bisa longlastt🥰❤️✨"
-
-)
 
 startConfetti()
 
@@ -501,4 +516,3 @@ origin:{x:Math.random(),y:0}
 
 </body>
 </html>
-```
