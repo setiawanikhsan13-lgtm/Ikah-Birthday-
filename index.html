@@ -19,7 +19,7 @@ color:white;
 background:black;
 }
 
-/* HEART LAYER (PALING ATAS) */
+/* HEART LAYER */
 
 #heartLayer{
 position:fixed;
@@ -30,8 +30,6 @@ height:100%;
 pointer-events:none;
 z-index:999999;
 }
-
-/* HEART */
 
 .heart{
 position:absolute;
@@ -73,7 +71,7 @@ object-fit:cover;
 
 .pinCard{
 position:relative;
-background:rgba(0,0,0,0.45);
+background:rgba(0,0,0,0.5);
 padding:25px;
 border-radius:20px;
 backdrop-filter:blur(10px);
@@ -86,7 +84,7 @@ font-size:32px;
 letter-spacing:10px;
 }
 
-/* PIN BUTTON */
+/* KEYPAD */
 
 .keypad{
 display:grid;
@@ -131,24 +129,61 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-padding:40px;
+padding:30px;
 position:relative;
 }
 
+/* CHAT CARD */
+
 .card{
-background:rgba(0,0,0,0.45);
-padding:30px;
-border-radius:20px;
-backdrop-filter:blur(6px);
+background:rgba(0,0,0,0.55);
+padding:25px;
+border-radius:24px;
+backdrop-filter:blur(8px);
 max-width:520px;
-text-align:center;
-font-size:20px;
+width:90%;
+display:flex;
+flex-direction:column;
+gap:10px;
+font-size:17px;
+line-height:1.6;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+
+/* CHAT BUBBLE */
+
+.chat{
+padding:12px 16px;
+border-radius:18px;
+max-width:85%;
+animation:fadeUp .5s ease;
+}
+
+.left{
+align-self:flex-start;
+background:rgba(255,255,255,0.15);
+}
+
+.right{
+align-self:flex-end;
+background:rgba(255,105,180,0.35);
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 /* BIRTHDAY */
 
 #birthday{
-font-size:44px;
+font-size:42px;
 font-weight:bold;
 text-shadow:
 0 0 20px #ff4da6,
@@ -157,6 +192,7 @@ text-shadow:
 margin-bottom:20px;
 opacity:0;
 transition:opacity 2s;
+text-align:center;
 }
 
 canvas{
@@ -171,15 +207,13 @@ pointer-events:none;
 
 <body>
 
-<!-- HEART LAYER -->
-
 <div id="heartLayer"></div>
 
 <audio id="music" loop>
 <source src="risk-it-all.mp3">
 </audio>
 
-<!-- PIN -->
+<!-- PIN PAGE -->
 
 <div id="pinPage">
 
@@ -250,12 +284,10 @@ pointer-events:none;
 let musicStarted=false
 
 function startMusic(){
-
 if(!musicStarted){
 document.getElementById("music").play()
 musicStarted=true
 }
-
 }
 
 document.addEventListener("pointerdown",startMusic,{once:true})
@@ -266,17 +298,14 @@ function typeText(id,text){
 
 let el=document.getElementById(id)
 el.innerHTML=""
-
 let i=0
 
 function typing(){
-
 if(i<text.length){
 el.innerHTML+=text.charAt(i)
 i++
-setTimeout(typing,40)
+setTimeout(typing,18)
 }
-
 }
 
 typing()
@@ -289,25 +318,18 @@ let pin=""
 const correct="160725"
 
 function press(n){
-
 startMusic()
-
 pin+=n
 update()
-
 }
 
 function clearPin(){
-
 pin=pin.slice(0,-1)
 update()
-
 }
 
 function update(){
-
 document.getElementById("display").innerText="*".repeat(pin.length)
-
 }
 
 function checkPin(){
@@ -316,7 +338,14 @@ if(pin===correct){
 
 document.getElementById("pinPage").style.display="none"
 
-typeText("text1","Bahkan saat hidup terasa seperti badai, kamu selalu ada di sana.")
+typeText("text1",
+"<div class='chat left'>Yeayyyy... 😆</div>"+
+"<div class='chat left'>Kalau kamu bisa buka PIN ini berarti kamu masih inget awal kita interaksi.</div>"+
+"<div class='chat left'>Iseng mau throwback ke awal kita kenal.</div>"+
+"<div class='chat left'>Karena kemarin kamu bilang seneng bisa ketemu aku.</div>"+
+"<div class='chat right'>Jadi aku mau tes kamu 😋</div>"+
+"<div class='chat right'>Kalau bener masih inget... harusnya kamu bisa buka PIN ini 😗❤️</div>"
+)
 
 startStorm(320)
 
@@ -330,39 +359,6 @@ update()
 }
 
 }
-
-/* HEART EFFECT */
-
-let lastHeart=0
-
-function heartBurst(x,y){
-
-let now=Date.now()
-
-if(now-lastHeart<80) return
-
-lastHeart=now
-
-let heart=document.createElement("div")
-heart.className="heart"
-heart.innerHTML="❤️"
-
-heart.style.left=x+"px"
-heart.style.top=y+"px"
-
-document.getElementById("heartLayer").appendChild(heart)
-
-setTimeout(()=>heart.remove(),1400)
-
-}
-
-document.addEventListener("pointerdown",e=>{
-heartBurst(e.clientX,e.clientY)
-})
-
-document.addEventListener("pointermove",e=>{
-heartBurst(e.clientX,e.clientY)
-})
 
 /* SLIDE */
 
@@ -394,7 +390,16 @@ document.getElementById("slider").style.transform=
 
 if(page==1){
 
-typeText("text2","Perlahan semuanya menjadi lebih tenang sejak ada kamu.")
+typeText("text2",
+"<div class='chat left'>Tbh...</div>"+
+"<div class='chat left'>Walaupun aku yakin kita bakal bertahan sampai sekarang.</div>"+
+"<div class='chat left'>Aku tetap ngerasa amaze kita masih bisa sejauh ini 🥹</div>"+
+"<div class='chat left'>Glad to meet you and finally have you bee.</div>"+
+"<div class='chat right'>Sekarang kita sudah sampai di hari bahagia kita 🎉</div>"+
+"<div class='chat right'>Yaitu ulang tahun kita.</div>"+
+"<div class='chat right'>Semoga kita bisa naik ke jenjang kebahagiaan berikutnya.</div>"+
+"<div class='chat right'>Sampai ke hari bahagia lain yang kita tunggu juga sayangg 😝🥰😚</div>"
+)
 
 startStorm(150)
 
@@ -402,7 +407,21 @@ startStorm(150)
 
 if(page==2){
 
-typeText("text3","Terima kasih sudah hadir dalam hidupku.")
+typeText("text3",
+"<div class='chat left'>Sekarang kita rayain hari bahagia untuk kamu duluu.</div>"+
+"<div class='chat left'>Karena kamu baru saja menginjak umur 24 tahunnn!!! 🥳🥳</div>"+
+"<div class='chat right'><b>Happy Birthday sayanggg ❤️</b></div>"+
+"<div class='chat left'>Semoga kamu selalu diberikan kesehatan.</div>"+
+"<div class='chat left'>Dan keselamatan di setiap langkah kamu.</div>"+
+"<div class='chat left'>Semoga rezekimu selalu berlimpah.</div>"+
+"<div class='chat left'>Dan hidupmu penuh keberkahan.</div>"+
+"<div class='chat right'>Dan kamu selalu sayang sama aku walaupun aku sering ngambek 🤭</div>"+
+"<div class='chat right'>(walaupun kadang kamu juga yang nyebelin 😤😂)</div>"+
+"<div class='chat left'>Untuk kita berdua...</div>"+
+"<div class='chat left'>Semoga kita selalu saling mengerti.</div>"+
+"<div class='chat left'>Dan memberikan effort terbaik untuk hubungan kita.</div>"+
+"<div class='chat right'><b>Supaya bisa longlasttt 🥰❤️✨</b></div>"
+)
 
 document.getElementById("birthday").style.opacity=1
 
